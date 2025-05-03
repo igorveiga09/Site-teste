@@ -1,1 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Detector de Sistema Operacional</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      text-align: center;
+      background-color: #f4f4f4;
+    }
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: inline-block;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Detectando o Sistema Operacional...</h1>
+    <p id="resultado">Aguarde...</p>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDEYQGExVlUUAog5jicse4e5R2DW4PSl6g",
+      authDomain: "teste01-74ac4.firebaseapp.com",
+      databaseURL: "https://teste01-74ac4-default-rtdb.firebaseio.com",
+      projectId: "teste01-74ac4",
+      storageBucket: "teste01-74ac4.firebasestorage.app",
+      messagingSenderId: "553178920862",
+      appId: "1:553178920862:web:5d60a02b86b8eb5358088f",
+      measurementId: "G-TKGREXT93N"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    function detectarSO() {
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      let sistemaOperacional = "Desconhecido";
+
+      if (/android/i.test(userAgent)) {
+        sistemaOperacional = "Android";
+      } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+        sistemaOperacional = "iOS";
+      } else if (/Windows Phone/i.test(userAgent)) {
+        sistemaOperacional = "Windows Phone";
+      } else if (/windows/i.test(userAgent)) {
+        sistemaOperacional = "Windows";
+      } else if (/macintosh|mac os x/i.test(userAgent)) {
+        sistemaOperacional = "macOS";
+      } else if (/linux/i.test(userAgent)) {
+        sistemaOperacional = "Linux";
+      }
+
+      const agora = new Date().toISOString();
+      const dados = {
+        sistemaOperacional,
+        horario: agora,
+        userAgent
+      };
+
+      // Salvar no Firebase
+      database.ref("acessos").push(dados);
+
+      document.getElementById("resultado").innerText = "Sistema operacional detectado: " + sistemaOperacional;
+    }
+
+    detectarSO();
+  </script>
+</body>
+</html>
 
